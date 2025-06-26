@@ -1,5 +1,5 @@
 #1---------------------------por amostrar o nome do meu  sistema.
-Architecture=$(uname -a)
+Architecture=$(uname -srvo)
 #2---------------------------numero de processadores fisicos
 P_cpus=$(lscpu |grep "Socket(s):" | awk '{print $2}')
 #3-numero de  processadores virtuais
