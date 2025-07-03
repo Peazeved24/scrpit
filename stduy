@@ -1,0 +1,195 @@
+VM:
+
+ - maqina virtual ! , serve para simular (virtualizar ) um computador fisico , tudo de forma  isolada ! ( separado do meu host OU HARDWARE).
+	- vantagem : nao preciso de outro computador  para poder utilizar  um certo SO / posso rodar quantos SO eu quiser (facilitando testes , desenvolvimentos )/  garantir isolamento entre diferente ambientes.
+
+	- desvantagem : consomem recursos do hardware.
+
+
+Hypervisor:
+
+	- sofware responsavel por  criar, gerenciar recursos do hardware e executar as VM e um servirdor fisico.
+
+		- esta entre o meu hardware e o meu guest Os(VMs), ou seja , aloca e gerencia recursos do meu server ( Cpu , memoria ,armazenamento , rede etc) de forma isolada para cada Vm.
+		- responsavel pela a virtualizacao do meu guest. ( rodar varios OS em simultaneo isoladamente)
+
+	TIPOS:
+
+		- tipo1 (bare metal / nativo) :
+				- instalado diretamente no hardware fisico (host) ---- data centers , servidores 
+					- roda diretamento no meu hardware , sem precisar de um OS. oferece mais desempenho.
+		- tipo2(hosted) :
+				- roda como um programa no meu SO . mais facil de usar , mais inclinado para ambientes domesticos , testes e desenvolvimento. 
+
+
+	- os tpo1 sao mais seguros do que os tipo2:
+			- as falhas do meu SO (host) nao vao atrapalhar a minha virtualizacao;
+			 - como esta instalado diretamento no meu hardware , ha infinitamente menos sofware no meio dos processos
+			-  mais eficente -- gestao de recursos.
+	- ambos simulam ambientes mas a grande diferenca esta nas camandas onde sao executados.
+
+
+	
+-----------------------------------------------------------------------------------------------------------------------------
+
+Debian  e RockyOs:
+
+	- kernel - nucleo do sistema - componetne central entre o hardware e o software do pc.
+			- gerenciamento de ram , servicos , cpu -- 
+	- debian e um distribuicao (distro --- Ubunto, linux mint, debian , arch linux) de linux.
+		- DEBIAN (pq?) :
+			- voltado para iniciantes devido a facilidade  de personalizacao do sistema ( instalacao , particoes etc)
+			 -  codigo aberto:
+					- qualquer pessoa pode pegar o codigo fonte ! para estudar , modifcar ou redistribuir o programa sem custos -- incentiva  colaboracao , inovacao e trasparencia do sistema
+
+			- livre (sofware liivre)
+				-  garante liberdade essencias aos users --- executar programas para qualquer finalidade,
+
+		- possui diversos repositorios  todos gerenciados pelo  o APT. -- facila instalacoes , atualizacoes e remocoes de sofware.
+		- suporta varias arquiteturas de hardware --- pc pessoas ate servidores.
+		- debian segue a mam estrutura dos sitemas linux --- diretorios organizados em uma arvore ! (comeca na root  /) , arquivos de configuracoes no /etc , dados variaveis em var. 
+
+
+	pq usar ele em vez do rockyOS?
+
+	- mais instabilidade --- visto que tem uma maior comunidade que faz modificacoes , testa e inovaco do sistema constastemente.
+	- grandes repos --- oferece vairos pacots prontos para uso facilitando a instalcao e desenvolvimento do sistema.
+	- infinitamente mais flexivel  --- tanto quanto o assunto e nivel de conhecimento (users ) quanto para personalizacao.
+
+
+	quem quer usar rocky?
+
+		- baseado em RHEL - red hat entreprice linux!
+				- disto de linux voltada a principalmente para ambientes corporativos , servers e data centers, servidor e data centers.
+
+		- mais voltado para quem buca uma alternativa ao centOs ou compatibilidade com o msm!
+
+				- mais voltado  para data centers
+                                - mais focada para desenvolvimentos : testes para total compatibilidade binariaria
+				-  funciona com diversos tipos ed hardware;
+				- codigo livre e aberto -- ideal para emrpesas que procuram trasparencia e flexibilidade (evitando custos por licenciamento)
+---------------------------------------------------------------------------------------------------------------------------------------------
+Particoes e LVM:
+
+		- Particoes :  divisoes logicas feitas em um disco rigido fisico;
+
+- tipos de particoes :
+				- primaria: unica particao onde o sistema sera instalado. (boot  do sistema -- bootable flag)
+				- extendida :  countainer (n armazena diretamente) para particoes logicas ( quebrar a regra de 4 particoes primaria) -- so pode haver uma particao extendida por sistema
+				- logica - dentro das extendidas   - servem para armazenar dados , instalar prorgramas ou ate servir para swap.
+ 						-ideal para separar dados , sistemas etc
+
+
+		- no projeto vamos usar o MBR como esquema de particao (master boot record):
+						- codigo de inicializacao (bootloader)- ele grava o nosso bootloader * GRUB* , dando inicio ao nosso sistea
+						- permite o uso de ate 3 particoes logicas + 1 secundaria ( ou 4 primarias), e na secundaira as logicas; 
+						-  sem o MBR  e o bootloader o sistema nao carrega
+
+				- a ideia por tras dessa divisao esta na utilizade que aquele espaco de memoria reservado tera no nosso sistema;
+
+					- no linux :
+						 	- e muito comum fazer particoes pois precisamo ter por ex:
+						- RAIZ ( /) - onde o sistema esta instalado
+						- /HOME - armazena os dados do user.	
+						- swap - memoria virtual -- reseva de memoria utilziada quanto a minha ram esta cheia ou a ser bastante utilizada --- guarda processos os processos de forma temporaria no meu HDD. (o que faz ser mais lenta mas fundamental).
+						
+
+		- LVM (logical volume manager):
+				-  LVM e uma ferramenta para gerenciamento volumes logicos dentro de uma particao ja criada;
+
+					- posso agrupar varios dicos 
+					- criar volumos logicos
+					-  formatar ou reinstalar o sistema.
+
+
+					- trabala sobre as particoes ja criadas para oferecer gerenciamento avancad de espaco em disco.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Personalizacao do sistema:
+		
+		-sistemas de arquivos , apt , aptitude , apparmor:
+
+	ext4: (extend file system 4(versao) ( sistema de arquivos escolhido)
+
+		sistema de arquivos monderno utilizado em sistemas linux;
+
+			- faz journaling - monitora diariamente os meus dados que protege  a integridade dos meus dados em caso de falhas
+			- permite que o sistema salve , leia , modifique etc arquivos
+			- sistema de arquivos padrao do linux.
+
+	Package manager (gerenciador de pacotes) (apt)
+			-ferramenta que automatiza a instalacao, atualizacao e configuracao de programas:
+			- podemos baixar automaticamente os arquivos necessarios de repos online;
+			-  permite atualizar todos os programas de forma simples
+			- garante a integridade do sistema --- baixando de forma segura
+
+						- usamos um mirror para melhorar o tempo de dowload (debian archive mirror)
+						- mirrors sao bons para dimiinuir a sobrecarga dos servers oficiais
+
+	apttidude : (gerenciador de pacotes) 
+			- funciona igual ao apt so que um pouco mais avancado e com uma interface visual  baseada em texto:
+										- oferece uma interface visual no terminal , facilitando a navegacao e gerenciamentos de pacotes
+			- utilizado para quem quer ter mais controle avancado no gerenciamento de pacotes enquanto o apt e mais simples , rapido.
+
+		
+	
+	Apparmor:
+				-modulo de seguranca do kernel do linux que funciona como uma camda extra de protecao.
+						- controla as permissoes que cada app pode ter.
+						- previne ataques e falhas evitando exploracoes de falhas ou vulnerabilidades
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SUDO:
+
+	- Sudo e um comando fundamental no linux que permite users comuns executarem comando socm permissoes de admin (root) de forma controlada (temporaria)
+
+			-executar tarefas de admin (instalar programas , atualizar o sistema , modificar arquivos etc)
+			- aumenta a seguranca , pois limita os privilegios 
+			- registros - todos os sudos sao registrados.
+
+		
+
+- sudo vs su:
+			- sudo e um comano - executa como root temporariamente/
+			- su - troca o user atual para root.
+
+
+
+- GUI e  UID
+		- Gruop identifier / User Identifire
+						- servem para idenrtifcar tanto um grupo quanto um user!  
+						- cada grupo/user tem um valor que representa o seu "status" de permissao 
+								- 0 para root ., acima de 1000 e users comuns. 
+								- 1 a 99 - kernal e servicos essenciais
+								- 100 - 999  - users e grupos de sistema - servicoes, daemons etcc
+	
+			- 0 tem poder total ( root) - 1000 para cima so permissoes limitadas.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SSH: (SECURE SHELL)    
+
+	- e um protocolo de rede cripotografico usado para acessar e trasferir arquivos entre computadores de forma segura//
+
+				-  um protocolo e um conjuto de regras e padroes que definem como dados devem ser trasferidos  e recebidos.
+
+		- o ssh permite que users controlem servers remotamente , executem comandos  tudo isso contra ataques e interceptacoes , gracas a cryptografia.
+
+	- no  projeto usamos o openSsh - que e um versao livre e de codigo aberto do protocolo ssh.
+			- quando um cliente se conecta , o server envia sua chave publica..	
+			- o cliente gera um chave se sessao unica que e criptografada
+			- o server descroptografa essa chave e usa para criptograficar as infos subsequente
+	
+		-sshd_config - arquivo principal de configuracao o server OpenSSH
+					- removemos a porta padrao -- e mudamos apra 4242
+					- PemitRootLogin no -- forcar que somente user comuns possam acesar via ssh , aumentando a seguranca pois forca o uso de sudo caso queria utilizar certas tarefas admi,
+
+		-ssh_confiig - arquivo de configuracao do cliente SSH.
+				- permite alternar opcoes padroes para todas as conecoes ssh.
+					- mudamos para port 4242 pois agora por padrao , essa sera a nossa porta (pois houve uma alteracao no sshd_config ) o cliente tmb precisa de ser informado dessa mudanca.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+UFW - Uncomplicated firewall:
+
